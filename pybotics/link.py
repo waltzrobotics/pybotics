@@ -6,23 +6,18 @@ from typing import Dict, Sequence, Union
 import numpy as np  # type: ignore
 
 from pybotics.json_encoder import JSONEncoder
+import attr
 
 
+@attr.s
 class Link(Sized):
     """Links: connected joints allowing relative motion of neighboring link."""
+    _size
 
-    def __repr__(self) -> str:
-        """Encode model as JSON."""
-        return self.to_json()
-
-    def to_json(self) -> str:
-        """Encode model as JSON."""
-        encoder = JSONEncoder(sort_keys=True)
-        return encoder.encode(self)
-
-    def to_dict(self) -> Dict[str, float]:
-        """Convert parameters to dict."""
-        raise NotImplementedError
+    # def to_json(self) -> str:
+    #     """Encode model as JSON."""
+    #     encoder = JSONEncoder(sort_keys=True)
+    #     return encoder.encode(self)
 
     def __len__(self) -> int:
         """Get number of parameters."""

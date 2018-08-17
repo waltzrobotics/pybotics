@@ -4,6 +4,8 @@ from pathlib import Path
 
 from setuptools import find_packages, setup  # type: ignore
 
+ROOT_DIR = Path(__file__).parent
+
 
 def main() -> None:
     """Run setup."""
@@ -64,14 +66,16 @@ def get_long_description() -> str:
     description = ''
 
     # add README
-    path = Path(__file__).parent / 'README.md'
+    path = ROOT_DIR / 'README.md'
     logging.info('README path: {}'.format(path.resolve()))
     with open(str(path)) as f:
         description += '\n'
         description += f.read()
 
+    description += '\n\n'
+
     # add changelog
-    path = Path(__file__).parent / 'CHANGELOG.md'
+    path = ROOT_DIR / 'CHANGELOG.md'
     logging.info('CHANGELOG path: {}'.format(path.resolve()))
     with open(str(path)) as f:
         description += '\n'
@@ -84,7 +88,7 @@ def get_long_description() -> str:
 def get_requirements():  # type: ignore
     """Get requirements list."""
     # requirements
-    requirements_path = Path(__file__).parent / 'requirements.txt'
+    requirements_path = ROOT_DIR / 'requirements.txt'
     logging.info('Requirements path: {}'.format(requirements_path.resolve()))
     with open(str(requirements_path)) as f:
         requirements = f.read().splitlines()

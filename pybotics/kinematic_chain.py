@@ -8,8 +8,10 @@ import numpy as np  # type: ignore
 from pybotics.errors import PyboticsError
 from pybotics.json_encoder import JSONEncoder
 from pybotics.link import Link, MDHLink, RevoluteMDHLink
+import attr
 
 
+@attr.s
 class KinematicChain(Sized):
     """
     An assembly of rigid bodies connected by joints.
@@ -17,6 +19,9 @@ class KinematicChain(Sized):
     Provides constrained (or desired) motion that is the
     mathematical model for a mechanical system.
     """
+    _matrix = attr.ib(type=np.ndarray)
+    _vector = attr.ib(type=np.ndarray)
+    _links = attr.ib(type=Sequence[Link])
 
     def __repr__(self) -> str:
         """Encode model as JSON."""
@@ -27,39 +32,6 @@ class KinematicChain(Sized):
         encoder = JSONEncoder(sort_keys=True)
         return encoder.encode(self)
 
-    @property
-    def matrix(self) -> np.ndarray:
-        """
-        Convert chain to matrix of link parameters.
-
-        Rows = links
-        Columns = parameters
-        """
-        raise NotImplementedError
-
-    @matrix.setter
-    def matrix(self, value: np.ndarray) -> None:
-        """
-        Set to matrix of link parameters.
-
-        Rows = links
-        Columns = parameters
-        """
-        raise NotImplementedError
-
-    def to_dict(self) -> Dict[str, Dict[str, float]]:
-        """Convert chain to dict."""
-        return {
-            'link_{}'.format(i): e.to_dict() for i, e in enumerate(self.links)
-        }
-
-    @property
-    @abstractmethod
-    def links(self) -> Sequence[Link]:
-        """Get links."""
-        raise NotImplementedError
-
-    @property
     def ndof(self) -> int:
         """
         Get number of degrees of freedom.
@@ -68,19 +40,11 @@ class KinematicChain(Sized):
         """
         return len(self)
 
-    @property
     @abstractmethod
-    def num_parameters(self) -> int:
-        """
-        Get the number of kinematic parameters.
-
-        :return: number of degrees of freedom
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def transforms(self, q: Optional[Sequence[float]] = None) -> \
-            Sequence[np.ndarray]:
+    def transforms(
+        self,
+        q: Optional[Sequence[float]] = None
+    ) -> Sequence[np.ndarray]:
         """
         Generate a sequence of spatial transforms.
 
@@ -90,22 +54,7 @@ class KinematicChain(Sized):
         """
         raise NotImplementedError
 
-    @property
-    @abstractmethod
-    def vector(self) -> np.ndarray:
-        """
-        Get the vector representation of the kinematic chain.
-
-        :return: vectorized kinematic chain
-        """
-        raise NotImplementedError
-
-    @vector.setter
-    def vector(self, value: Sequence[float]) -> None:
-        """Set parameters of all links."""
-        raise NotImplementedError
-
-
+@attr.s
 class MDHKinematicChain(KinematicChain):
     """Kinematic Chain of MDH links."""
 
@@ -178,7 +127,7 @@ class MDHKinematicChain(KinematicChain):
         """Get sequency of 4x4 transforms."""
         q = np.zeros(len(self)) if q is None else q
         transforms = [link.transform(p) for link, p in
-                      zip(self._links, q)]  # type: ignore
+                      zip(self._links, q)]
         return transforms
 
     @property
