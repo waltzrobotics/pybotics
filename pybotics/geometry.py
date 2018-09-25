@@ -1,7 +1,7 @@
 """Geometry functions and utilities."""
 from enum import Enum
 from typing import Sequence, Union
-
+import math
 import numpy as np  # type: ignore
 
 from pybotics.constants import POSITION_VECTOR_LENGTH, TRANSFORM_MATRIX_SHAPE
@@ -136,8 +136,8 @@ def wrap_2_pi(angle: float) -> float:
 
 def rotation_matrix_x(angle: float) -> np.ndarray:
     """Generate a basic 4x4 rotation matrix about the X axis."""
-    s = np.sin(angle)
-    c = np.cos(angle)
+    s = math.sin(angle)
+    c = math.cos(angle)
 
     matrix = np.array([
         1, 0, 0, 0,
@@ -151,8 +151,8 @@ def rotation_matrix_x(angle: float) -> np.ndarray:
 
 def rotation_matrix_y(angle: float) -> np.ndarray:
     """Generate a basic 4x4 rotation matrix about the Y axis."""
-    s = np.sin(angle)
-    c = np.cos(angle)
+    s = math.sin(angle)
+    c = math.cos(angle)
 
     matrix = np.array([
         c, 0, s, 0,
@@ -166,8 +166,8 @@ def rotation_matrix_y(angle: float) -> np.ndarray:
 
 def rotation_matrix_z(angle: float) -> np.ndarray:
     """Generate a basic 4x4 rotation matrix about the Z axis."""
-    s = np.sin(angle)
-    c = np.cos(angle)
+    s = math.sin(angle)
+    c = math.cos(angle)
 
     matrix = np.array([
         c, -s, 0, 0,

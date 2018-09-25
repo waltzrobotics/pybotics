@@ -1,4 +1,5 @@
 """Link module."""
+import math
 from abc import abstractmethod
 from collections import Sized
 from typing import Dict, Sequence, Union
@@ -122,10 +123,10 @@ class MDHLink(Link):
         theta = vector[2]
         d = vector[3]
 
-        crx = np.cos(alpha)
-        srx = np.sin(alpha)
-        crz = np.cos(theta)
-        srz = np.sin(theta)
+        crx = math.cos(alpha)
+        srx = math.sin(alpha)
+        crz = math.cos(theta)
+        srz = math.sin(theta)
 
         transform = np.array([
             [crz, -srz, 0, a],
@@ -159,7 +160,6 @@ class MDHLink(Link):
         self.theta = value[2]
         self.d = value[3]
 
-
 class RevoluteMDHLink(MDHLink):
     """
     Link class that uses Modified DH parameters for a revolute joint.
@@ -174,7 +174,7 @@ class RevoluteMDHLink(MDHLink):
         :param q: given displacement
         :return vector of new displacement state
         """
-        v = np.copy(self.vector)
+        v = self.vector.copy()
         v[2] += q
         return v
 
@@ -193,6 +193,6 @@ class PrismaticMDHLink(MDHLink):
         :param q: given displacement
         :return vector of new displacement state
         """
-        v = np.copy(self.vector)
+        v = self.vector.copy()
         v[3] += q
         return v
